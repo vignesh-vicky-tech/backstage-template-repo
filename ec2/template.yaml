@@ -1,0 +1,96 @@
+---
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: ec2-instance
+  title: AWS EC2 Instance
+  description: Deploy a EC2 instance on AWS using Crossplane
+spec:
+  owner: user:guest
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - Reponame
+      properties:
+        Reponame:
+          title: App Name
+          type: string
+          description: Unique name for your app
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+    - title: Choose a Repo location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+    - title: Basic EC2 instance Configuration
+      required:
+        - name
+        - region
+        - ami
+        - instanceType
+        - keyName
+      properties:
+        name:
+          title: Instance Name
+          type: string
+          description: The name of your EC2 instance
+          ui:autofocus: true
+        region:
+          title: AWS Region
+          type: string
+          description: The AWS region where the cluster will be deployed
+          enum:
+            - us-east-1
+            - us-west-2
+        ami:
+          title: ami-image id
+          type: string
+          description: ami-img id to be used in the instance
+          ui:autofocus: true
+        instanceType:
+          title: Instance type
+          type: string
+          description: The instance type for EC2
+          ui:autofocus: true
+        keyName:
+          title: key-pair name
+          type: string
+          description: The name of the key-pair to be used
+          ui:autofocus: true
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          region: ${{ parameters.region }}
+          ami: ${{ parameters.ami }}
+          instanceType: ${{ parameters.instanceType }}
+          keyName: ${{ parameters.keyName }}
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts:
+          - github.com
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        repoVisibility: public
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
