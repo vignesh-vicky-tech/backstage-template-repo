@@ -1,0 +1,13 @@
+---
+apiVersion: compositions.io/v1alpha1
+kind: Instance
+metadata:
+  name: ${{ values.name | dump }}
+spec:
+  parameters:
+    region: ${{ values.region | dump }}
+    ami: ${{ values.ami | dump }}
+    instanceType: ${{ values.instanceType | dump }}
+    keyName: ${{ values.keyName | dump }}
+  compositionRef:
+    name: ec2-instance
