@@ -94,6 +94,24 @@ spec:
          repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
          catalogInfoPath: '/catalog-info.yaml'
 
+    ---
+- id: github-action
+  name: Trigger GitHub Action
+  action: github:actions:dispatch
+  input:
+    workflowId: deploy-ec2.yaml
+    repoUrl: github.com?repo=argocd-workflow&amp;owner=vignesh-vicky-tech
+    branchOrTagName: main
+- id: github-action
+  name: Trigger GitHub Action
+  action: github:actions:dispatch
+  input:
+    workflowId: deploy-ec2.yml
+    repoUrl: ${{ parameters.repoUrl | parseRepoUrl | pick('host') }}?repo=${{
+      parameters.repoUrl | parseRepoUrl | pick('repo') }}&owner=${{
+      parameters.repoUrl | parseRepoUrl | pick('owner') }}
+    branchOrTagName: main
+
   output:
     links:
       - title: Repository
