@@ -100,7 +100,7 @@ spec:
   action: github:actions:dispatch
   input:
     workflowId: deploy-ec2.yaml
-    repoUrl: github.com?repo=argocd-workflow&amp;owner=vignesh-vicky-tech
+    repoUrl: 'github.com?repo=argocd-workflow&owner=vignesh-vicky-tech'
     branchOrTagName: main
 - id: github-action
   name: Trigger GitHub Action
